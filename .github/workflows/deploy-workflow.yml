@@ -109,29 +109,18 @@ jobs:
       - name: Copy docker-compose.yml to EC2 instance
         run: |
             scp -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa docker-compose.yml ec2-user@${{ env.PUBLIC_IP  }}:/home/ec2-user/
-            sudo apt-get remove containerd
-            sudo apt-get purge containerd containerd.io
-            sudo apt-get autoremove
-            sudo apt-get clean
-            sudo apt update
-
+           
             sudo yum install -y python3-pip
-            sudo pip3 install docker-compose
-            sudo dnf install docker
+            sudo pip install --ignore-installed docker-compose
+            sudo dnf install docker -y
             sudo usermod -aG docker ec2-user
-
-
-
-
-
+            sudo systemctl start docker
+            sudo systemctl enable docker
+            sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+            sudo chmod +x /usr/local/bin/docker-compose
             sudo docker-compose pull  # Descarga las imágenes de Docker Hub
             sudo docker-compose up -d  # Levanta los contenedores en segundo plano
             EOF
 
-
-           # curl -fsSL https://get.docker.com | sudo sh
-           # sudo curl -L "https://github.com/docker/compose/releases/download/$(curl -s https://api.github.com/repos/docker/compose/releases/latest | jq -r .tag_name)/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-           # sudo chmod +x /usr/local/bin/docker-compose
-           # cd /home/ec2-user
 
             
