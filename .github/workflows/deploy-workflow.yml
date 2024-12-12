@@ -110,7 +110,7 @@ jobs:
         run: |
             scp -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa docker-compose.yml ec2-user@${{ env.PUBLIC_IP  }}:/home/ec2-user/
            
-            sudo dnf install docker-compose
+            sudo apt install docker-compose
             sudo dnf install docker -y
             sudo usermod -aG docker ec2-user
             sudo systemctl start docker
