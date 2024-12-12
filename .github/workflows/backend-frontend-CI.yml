@@ -18,7 +18,7 @@ on:
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
-    if: github.ref_name == 'develop' || github.ref_name == 'master'
+    if: github.ref_name == 'main'
 
     steps:
       - name: Checkout code
@@ -33,7 +33,7 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      # Extracción de versiones
+    
       - name: Extract backend version
         id: backend_version
         run: echo "BACKEND_VERSION=$(jq -r .version < backend/package.json)" >> $GITHUB_ENV
