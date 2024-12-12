@@ -30,6 +30,13 @@ jobs:
       - name: Verify AWS CLI installation
         run: aws --version
 
+      - name: Set up AWS CLI
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: $AWS_ACCESS_KEY_ID
+          aws-secret-access-key: $AWS_SECRET_ACCESS_KEY
+          aws-region: $AWS_REGION
+
       - name: Launch EC2 Instance
         id: create_ec2
         env:
