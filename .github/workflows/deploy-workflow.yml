@@ -98,6 +98,8 @@ jobs:
       - name: Configure EC2 Instance
         run: |
             # Crear directorio ~/.ssh y añadir la clave privada para SSH
+            echo "${{ secrets.AWS_SSH_KEY }}" > ~/.ssh/id_rsa
+
             mkdir -p ~/.ssh
             echo "${{ secrets.AWS_SSH_KEY }}" > ~/.ssh/id_rsa
             chmod 600 ~/.ssh/id_rsa
