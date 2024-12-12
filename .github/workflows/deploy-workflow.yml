@@ -30,6 +30,32 @@ jobs:
       - name: Verify AWS CLI installation
         run: aws --version
 
+      - name: Create Security Group
+        run: |
+          # Create Security Group
+          SECURITY_GROUP_ID=$(aws ec2 create-security-group \
+            --group-name MySecurityGroup \
+            --description "Security group created by GitHub Actions" \
+            --query 'GroupId' \
+            --output text)
+          
+          echo "Created Security Group with ID: $SECURITY_GROUP_ID"
+          
+          # Add Inbound Rule for SSH (port 22)
+          aws ec2 authorize-security-group-ingress \
+            --group-id $SECURITY_GROUP_ID \
+            --protocol tcp \
+            --port 22 \
+            --cidr 0.0.0.0/0  # Open for SSH to any IP, adjust if needed
+
+          # Optionally, add other rules (HTTP, HTTPS, etc.)
+          aws ec2 authorize-security-group-ingress \
+            --group-id $SECURITY_GROUP_ID \
+            --protocol tcp \
+            --port 80 \
+            --cidr 0.0.0.0/0  # Open for HTTP to any IP
+
+
       - name: Set up AWS CLI
         uses: aws-actions/configure-aws-credentials@v2
         with:
@@ -42,7 +68,7 @@ jobs:
         env:
           INSTANCE_TYPE: t2.micro
           AMI_ID: ami-0ebfd941bbafe70c6
-          SECURITY_GROUP: default
+          SECURITY_GROUP: MySecurityGroup
         run: |
           INSTANCE_ID=$(aws ec2 run-instances \
             --image-id $AMI_ID \
