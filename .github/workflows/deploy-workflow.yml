@@ -55,7 +55,6 @@ jobs:
             --port 80 \
             --cidr 0.0.0.0/0  # Open for HTTP to any IP
 
-
       - name: Set up AWS CLI
         uses: aws-actions/configure-aws-credentials@v2
         with:
@@ -86,6 +85,7 @@ jobs:
         
       - name: Setup SSH Key
         run: |
+          mkdir -p ~/.ssh
           echo "$AWS_SSH_KEY" > /tmp/id_rsa
           chmod 600 /tmp/id_rsa
         env:
@@ -101,13 +101,17 @@ jobs:
             --output text)
           echo "PUBLIC_IP=$PUBLIC_IP" >> $GITHUB_ENV
 
-      - name: Configure EC2 Instance
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ env.PUBLIC_IP }}
-          username: ec2-user
-          key: /tmp/id_rsa
-          script: |
-            sudo dnf update
-            sudo dnf install nginx -y
-            sudo systemctl start nginx
+      - name: Ejecutar script en la instancia
+        run: |
+           ssh -o StrictHostKeyChecking=no ec2-user@${{ env.PUBLIC_IP }}
+  
+    #   - name: Configure EC2 Instance
+    #     uses: appleboy/ssh-action@master
+    #     with:
+        #   host:
+    #       username: ec2-user
+    #       key: /tmp/id_rsa
+    #       script: |
+    #         sudo dnf update
+    #         sudo dnf install nginx -y
+    #         sudo systemctl start nginx
