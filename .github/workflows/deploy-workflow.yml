@@ -22,7 +22,12 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Install AWS CLI
-        run: sudo apt update && sudo apt install awscli -y
+        run: |
+          sudo apt update
+          sudo apt install -y awscli
+          
+      - name: Verify AWS CLI installation
+        run: aws --version
 
       - name: Launch EC2 Instance
         id: create_ec2
