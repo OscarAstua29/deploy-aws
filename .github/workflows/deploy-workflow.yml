@@ -99,13 +99,14 @@ jobs:
           mkdir -p ~/.ssh
           echo "$AWS_SSH_KEY" > /tmp/id_rsa
           chmod 600 /tmp/id_rsa
-          ssh-keyscan -H ${{ secrets.PUBLIC_IP }} >> ~/.ssh/known_hosts
+          
         env:
           AWS_SSH_KEY: ${{ secrets.AWS_SSH_KEY }}
 
       - name: Ejecutar script en la instancia
         run: |
-           ssh -o StrictHostKeyChecking=no ec2-user@${{ env.PUBLIC_IP }}
+           ssh-keyscan -H ${{ secrets.PUBLIC_IP }} >> ~/.ssh/known_hosts
+           ssh -o StrictHostKeyChecking=no -i /tmp/id_rsa ec2-user@${{ secrets.PUBLIC_IP }}
   
     #   - name: Configure EC2 Instance
     #     uses: appleboy/ssh-action@master
