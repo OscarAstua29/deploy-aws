@@ -1,0 +1,68 @@
+name: Deploy Nginx to AWS
+
+on:
+  push:
+    branches:
+      - "main"
+
+env:
+  AWS_REGION: us-east-1 
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  AWS_SSH_KEY: ${{ secrets.AWS_SSH_KEY }}
+  KEY_PAIR_NAME: ${{ secrets.AWS_SSH_KEY }}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    if: github.ref_name == 'main'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install AWS CLI
+        run: sudo apt update && sudo apt install awscli -y
+
+      - name: Launch EC2 Instance
+        id: create_ec2
+        env:
+          INSTANCE_TYPE: t2.micro
+          AMI_ID: ami-0c02fb55956c7d316  # AMI de Ubuntu en us-east-1
+          SECURITY_GROUP: default
+        run: |
+          INSTANCE_ID=$(aws ec2 run-instances \
+            --image-id $AMI_ID \
+            --count 1 \
+            --instance-type $INSTANCE_TYPE \
+            --key-name $KEY_PAIR_NAME \
+            --security-groups $SECURITY_GROUP \
+            --region $AWS_REGION \
+            --query 'Instances[0].InstanceId' \
+            --output text)
+          echo "INSTANCE_ID=$INSTANCE_ID" >> $GITHUB_ENV
+          aws ec2 wait instance-running --instance-ids $INSTANCE_ID --region $AWS_REGION
+          
+        #   echo "Esperando a que la instancia esté en ejecución...
+          
+
+      - name: Get EC2 Public IP
+        id: get_public_ip
+        run: |
+          PUBLIC_IP=$(aws ec2 describe-instances \
+            --instance-ids ${{ env.INSTANCE_ID }} \
+            --region $AWS_REGION \
+            --query 'Reservations[0].Instances[0].PublicIpAddress' \
+            --output text)
+          echo "PUBLIC_IP=$PUBLIC_IP" >> $GITHUB_ENV
+
+      - name: Configure EC2 Instance
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ env.PUBLIC_IP }}
+          username: ubuntu
+          key: ${{ secrets.AWS_SSH_KEY }}
+          script: |
+            sudo apt update
+            sudo apt install nginx -y
+            sudo systemctl start nginx
