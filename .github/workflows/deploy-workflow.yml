@@ -110,9 +110,11 @@ jobs:
         run: |
             scp -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa docker-compose.yml ec2-user@${{ env.PUBLIC_IP  }}:/home/ec2-user/
             sudo apt-get remove containerd
-            sudo apt-get purge containerd
+            sudo apt-get purge containerd containerd.io
+            sudo apt-get autoremove
+            sudo apt-get clean
             sudo apt update
-            sudo apt install -y docker.io
+            curl -fsSL https://get.docker.com | sudo sh
             sudo curl -L "https://github.com/docker/compose/releases/download/$(curl -s https://api.github.com/repos/docker/compose/releases/latest | jq -r .tag_name)/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
             sudo chmod +x /usr/local/bin/docker-
             cd /home/ec2-user
