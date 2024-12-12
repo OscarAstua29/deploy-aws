@@ -83,7 +83,13 @@ jobs:
           aws ec2 wait instance-running --instance-ids $INSTANCE_ID --region $AWS_REGION
           
         #   echo "Esperando a que la instancia esté en ejecución...
-          
+        
+      - name: Setup SSH Key
+        run: |
+          echo "$AWS_SSH_KEY" > /tmp/id_rsa
+          chmod 600 /tmp/id_rsa
+        env:
+          AWS_SSH_KEY: ${{ secrets.AWS_SSH_KEY }}
 
       - name: Get EC2 Public IP
         id: get_public_ip
@@ -100,8 +106,8 @@ jobs:
         with:
           host: ${{ env.PUBLIC_IP }}
           username: ubuntu
-          key: ${{ secrets.AWS_SSH_KEY }}
+          key: /tmp/id_rsa
           script: |
-            sudo apt update
-            sudo apt install nginx -y
+            sudo dnf update
+            sudo dnf install nginx -y
             sudo systemctl start nginx
