@@ -107,7 +107,7 @@ jobs:
         
           # Probar la conexión SSH a la instancia
           echo 'Intentando conexión SSH...'
-           ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ubuntu@$PUBLIC_IP 'echo "Conexión exitosa"'
+           ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ubuntu@44.204.146.173 'echo "Conexión exitosa"'
         
           echo 'Proceso completado'
 
