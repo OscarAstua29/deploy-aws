@@ -1,11 +1,10 @@
-version: "3.8"
 services:
   web:
     image: oscarastua29/frontend:v0.1.0
     depends_on:
       - api
     ports:
-      - "3000:3000"
+      - "80:3000"
     networks:
       - network-backend
   api:
