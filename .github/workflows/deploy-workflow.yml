@@ -110,7 +110,7 @@ jobs:
         run: |
             scp -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa docker-compose.yml ec2-user@${{ env.PUBLIC_IP  }}:/home/ec2-user/
            
-              dnf install -y docker
+              sudo yum update -y
 
               docker --version
 
