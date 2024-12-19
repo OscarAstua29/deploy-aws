@@ -98,13 +98,10 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.AWS_SSH_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H ${{ env.PUBLIC_IP }} >> ~/.ssh/known_hosts
-              sudo apt-get update -y
-              sudo apt install docker.io -y
-              sudo systemctl start docker
-              sudo systemctl enable docker
-
-              docker-compose up -d || { echo "Docker Compose failedxxxxxx"; exit 1; }
+           ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ubuntu@${{ env.PUBLIC_IP }} << EOF
+           
+           echo "Conexión exitosa"
+    
           EOF
 
             
