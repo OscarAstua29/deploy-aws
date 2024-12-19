@@ -33,7 +33,7 @@ jobs:
       - name: Create Security Group
         run: |
          
-          ECURITY_GROUP_ID=$(aws ec2 create-security-group \
+          SECURITY_GROUP_ID=$(aws ec2 create-security-group \
             --group-name MySecurityGroup \
             --description "Security group created by GitHub Actions" \
             --query 'GroupId' \
