@@ -93,25 +93,44 @@ jobs:
           echo "PUBLIC_IP=$PUBLIC_IP" >> $GITHUB_ENV
 
 
-      - name: Configure EC2 Instance
-        run: |  
-        
-          mkdir -v -p ~/.ssh
-          echo 'Carpeta creada'
-          echo -e "${{ secrets.AWS_SSH_KEY }}" > ~/.ssh/id_rsa
-          echo 'Clave copiada'
-        
-          # Establecer permisos correctos para la clave privada
-          chmod 600 ~/.ssh/id_rsa
-          echo 'Permisos de clave asignados'
-        
-          # Probar la conexión SSH a la instancia
-          echo 'Intentando conexión SSH...'
-          echo $PUBLIC_IP
-          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ubuntu@$PUBLIC_IP 'docker-compose -f /home/ubuntu/docker-compose.yml up -d'
+      - name: Wait for EC2 instance to be ready
+        run: |
+          HOST=$PUBLIC_IP
+          PORT=22
+          TIMEOUT=300  # Tiempo máximo de espera en segundos
+          START=$(date +%s)
             
-        
-          echo 'Proceso completado'
+          echo "Esperando que la instancia esté lista para SSH..."
+    
+          while true; do
+              nc -z -w5 $HOST $PORT 2>/dev/null  # Verifica si el puerto 22 está abierto
+              if [ $? -eq 0 ]; then
+                  echo "Conexión SSH disponible en $HOST:$PORT"
+                  break  # Sale del ciclo cuando la conexión es exitosa
+              fi
+    
+              NOW=$(date +%s)
+              ELAPSED=$((NOW - START))
+              if [ $ELAPSED -ge $TIMEOUT ]; then
+                  echo "Tiempo de espera agotado. La instancia no está lista."
+                  exit 1  # Sale del flujo de trabajo si se alcanzó el tiempo de espera
+              fi
+    
+              echo "Esperando... ($ELAPSED segundos)"
+              sleep 5  # Espera de 5 segundos entre intentos
+          done
+    
+      - name: Copy docker-compose.yml to EC2
+        run: |
+          echo "Copiando docker-compose.yml a la instancia EC2..."
+          scp -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no docker-compose.yml ubuntu@$PUBLIC_IP:/home/ubuntu/docker-compose.yml
+          echo "docker-compose.yml copiado exitosamente."
+    
+      - name: SSH into EC2 and run docker-compose
+        run: |
+          echo "Conectando a la instancia EC2..."
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ubuntu@$PUBLIC_IP 'docker-compose -f /home/ubuntu/docker-compose.yml up -d'
+          echo "docker-compose ejecutado en la instancia EC2."
 
 
 
