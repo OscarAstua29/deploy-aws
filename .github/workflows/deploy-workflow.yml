@@ -38,6 +38,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1 
 
+          
       - name: Launch EC2 Instance
         id: create_ec2
         env:
