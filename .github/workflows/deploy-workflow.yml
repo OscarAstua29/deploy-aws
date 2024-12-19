@@ -85,8 +85,8 @@ jobs:
 
       - name: Copy files to EC2 instance
         run: |
-          scp -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa docker-compose.yml my_script.sh ec2-user@${{ env.PUBLIC_IP }}:/home/ec2-user/
+          scp -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa docker-compose.yml instance-config.sh ec2-user@${{ env.PUBLIC_IP }}:/home/ec2-user/
          
       - name: Run instance-config.ssh on EC2
         run: |
-          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ec2-user@${{ env.PUBLIC_IP }} "chmod +x /home/ec2-user/my_script.sh && /home/ec2-user/my_script.sh"
+          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ec2-user@${{ env.PUBLIC_IP }} "chmod +x /home/ec2-user/instance-config.sh && /home/ec2-user/instance-config.sh"
