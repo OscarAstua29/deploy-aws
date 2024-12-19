@@ -102,7 +102,6 @@ jobs:
           echo 'Copia rsa'
           chmod  600 ~/.ssh/id_rsa
           echo 'permiso rsa'
-          ssh-keyscan -H ${{ env.PUBLIC_IP }} >> ~/.ssh/known_hosts
           echo 'ACA PETA?'
           ssh -vvv -i ~/.ssh/id_rsa ubuntu@${{ env.PUBLIC_IP }} 'echo Conexión exitosa'
           echo 'PASO?'
