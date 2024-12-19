@@ -96,7 +96,7 @@ jobs:
       - name: Configure EC2 Instance
         run: |  
           mkdir -p ~/.ssh
-          echo "${{ secrets.AWS_SSH_KEY }}" > ~/.ssh/id_rsa
+          echo -e "${{ secrets.AWS_SSH_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H ${{ env.PUBLIC_IP }} >> ~/.ssh/known_hosts
 
