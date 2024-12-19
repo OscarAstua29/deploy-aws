@@ -123,13 +123,13 @@ jobs:
       - name: Copy docker-compose.yml to EC2
         run: |
           echo "Copiando docker-compose.yml a la instancia EC2..."
-          scp -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no docker-compose.yml ubuntu@$PUBLIC_IP:/home/ubuntu/docker-compose.yml
+          scp -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no docker-compose.yml ec2-user@$PUBLIC_IP:/home/ubuntu/docker-compose.yml
           echo "docker-compose.yml copiado exitosamente."
     
       - name: SSH into EC2 and run docker-compose
         run: |
           echo "Conectando a la instancia EC2..."
-          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ubuntu@$PUBLIC_IP 'docker-compose -f /home/ubuntu/docker-compose.yml up -d'
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ec2-user@$PUBLIC_IP 'docker-compose -f /home/ubuntu/docker-compose.yml up -d'
           echo "docker-compose ejecutado en la instancia EC2."
 
 
