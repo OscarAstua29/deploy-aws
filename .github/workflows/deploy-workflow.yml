@@ -99,10 +99,15 @@ jobs:
           echo "${{ secrets.AWS_SSH_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H ${{ env.PUBLIC_IP }} >> ~/.ssh/known_hosts
-          scp -i ~/.ssh/id_rsa docker-compose.yml ec2-user@${{ env.PUBLIC_IP }}:/home/ec2-user/
-          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ec2-user@${{ env.PUBLIC_IP }} << EOF
+          scp -i ~/.ssh/id_rsa docker-compose.yml ubuntu@${{ env.PUBLIC_IP }}:/home/ec2-user/
+          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ubuntu@${{ env.PUBLIC_IP }} << EOF
          
-    
+              sudo apt-get update -y
+              sudo apt install docker.io -y
+              sudo systemctl start docker
+              sudo systemctl enable docker
+
+              docker-compose up -d
           EOF
 
             
