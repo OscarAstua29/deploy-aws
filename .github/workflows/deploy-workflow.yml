@@ -109,7 +109,7 @@ jobs:
       - name: Copy docker-compose.yml to EC2 instance
         run: |
             scp -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa docker-compose.yml ec2-user@${{ env.PUBLIC_IP  }}:/home/ec2-user/
-            ssh -i ~/.ssh/id_rsa ec2-user@52.90.176.113 << EOF
+            ssh -i ~/.ssh/id_rsa ec2-user@${{ env.PUBLIC_IP }}  << EOF
             sudo apt-get install docker -y
             sudo systemctl start docker
             sudo systemctl enable docker
