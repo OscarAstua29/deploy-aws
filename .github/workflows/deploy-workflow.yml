@@ -48,7 +48,7 @@ jobs:
     #         --port 22 \
     #         --cidr 0.0.0.0/0  # Open for SSH to any IP, adjust if needed
 
-    #       # Optionally, add other rules (HTTP, HTTPS, etc.)
+    #     
     #       aws ec2 authorize-security-group-ingress \
     #         --group-id $SECURITY_GROUP_ID \
     #         --protocol tcp \
@@ -110,16 +110,10 @@ jobs:
         run: |
             scp -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa docker-compose.yml ec2-user@${{ env.PUBLIC_IP  }}:/home/ec2-user/
            
-            sudo apt-get install docker-compose
             sudo apt-get install docker -y
-            sudo usermod -aG docker ec2-user
             sudo systemctl start docker
             sudo systemctl enable docker
-            sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-            sudo chmod +x /usr/local/bin/docker-compose
-            sudo docker-compose pull  # Descarga las imágenes de Docker Hub
-            sudo docker-compose up -d  # Levanta los contenedores en segundo plano
-            EOF
+            docker-compose up -d
 
 
             
