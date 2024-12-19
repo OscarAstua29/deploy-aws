@@ -66,7 +66,7 @@ jobs:
         id: create_ec2
         env:
           INSTANCE_TYPE: t2.micro
-          AMI_ID: ami-0ebfd941bbafe70c6
+          AMI_ID: ami-0e2c8caa4b6378d8c
           SECURITY_GROUP: MySecurityGroup
         run: |
           INSTANCE_ID=$(aws ec2 run-instances \
@@ -108,9 +108,9 @@ jobs:
 
       - name: Copy docker-compose.yml to EC2 instance
         run: |
-            sudo dnf update -y
+            sudo apt-get update -y
             ssh -i ~/.ssh/id_rsa ec2-user@${{ env.PUBLIC_IP }}  << EOF
-            sudo dnf update -y
+            sudo apt install docker.io -y
             sudo systemctl start docker
             sudo systemctl enable docker
             sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
