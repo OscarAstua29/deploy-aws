@@ -98,8 +98,8 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.AWS_SSH_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-           ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ubuntu@${{ env.PUBLIC_IP }} << EOF
-           
+           ssh -T -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ubuntu@${{ env.PUBLIC_IP }} << EOF
+
            echo "Conexión exitosa"
     
           EOF
