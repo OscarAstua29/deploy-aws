@@ -60,7 +60,7 @@ jobs:
            --protocol tcp \
            --port 80 \
            --cidr 0.0.0.0/0  # Open for HTTP to any IP
-
+  
       - name: Set up AWS CLI
         uses: aws-actions/configure-aws-credentials@v2
         with:
