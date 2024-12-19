@@ -14,7 +14,7 @@ env:
 
 jobs:
   deploy:
-    runs-on: fedora-latest
+    runs-on: ubuntu-latest
     if: github.ref_name == 'main'
 
     steps:
@@ -115,15 +115,12 @@ jobs:
       - name: Copy docker-compose.yml to EC2 instance
         run: |
             scp -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa docker-compose.yml ec2-user@${{ env.PUBLIC_IP  }}:/home/ec2-user/
-              cat /etc/os-release
-              sudo yum update -y
-              sudo yum install -y docker
-              docker --version
-              sudo service docker start
-              sudo usermod -a -G docker ec2-user
-              sudo curl -L https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose
-              sudo chmod +x /usr/local/bin/docker-compose
-              docker-compose version
-              sudo docker-compose up -d
 
-            EOF
+      - name: Copy my_script.ssh to EC2
+        run: |
+          scp -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa instance-config.ssh ec2-user@${{ env.PUBLIC_IP }}:/home/ec2-user/
+          chmod +x /home/ec2-user/instance-config.sh
+        
+      - name: Run instance-config.ssh on EC2
+        run: |
+          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ec2-user@${{ env.PUBLIC_IP }} 'bash /home/ec2-user/instance-config.ssh'
