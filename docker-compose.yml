@@ -4,7 +4,7 @@ services:
     depends_on:
       - api
     ports:
-      - "80:3000"
+      - "8080:3000"
     networks:
       - network-backend
   api:
@@ -12,7 +12,7 @@ services:
     depends_on:
       - mongo
     ports:
-      - "3001:3001"
+      - "3000:3001"
     networks: 
      - network-backend
   

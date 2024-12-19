@@ -14,7 +14,7 @@ env:
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: fedora-latest
     if: github.ref_name == 'main'
 
     steps:
@@ -58,7 +58,7 @@ jobs:
           aws ec2 authorize-security-group-ingress \
             --group-id $SECURITY_GROUP_ID \
             --protocol tcp \
-            --port 80 \
+            --port 8080 \
             --cidr 0.0.0.0/0  # Open for HTTP to any IP
   
       - name: Set up AWS CLI
@@ -115,7 +115,7 @@ jobs:
       - name: Copy docker-compose.yml to EC2 instance
         run: |
             scp -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa docker-compose.yml ec2-user@${{ env.PUBLIC_IP  }}:/home/ec2-user/
-           
+              cat /etc/os-release
               sudo yum update -y
               sudo yum install -y docker
               docker --version
@@ -124,6 +124,6 @@ jobs:
               sudo curl -L https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose
               sudo chmod +x /usr/local/bin/docker-compose
               docker-compose version
-              sudo docker-compose up
+              sudo docker-compose up -d
 
             EOF
