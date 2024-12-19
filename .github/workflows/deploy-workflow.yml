@@ -97,7 +97,7 @@ jobs:
         run: |
           HOST=$PUBLIC_IP
           PORT=22
-          TIMEOUT=300  # Tiempo máximo de espera en segundos
+          TIMEOUT=1000  # Tiempo máximo de espera en segundos
           START=$(date +%s)
             
           echo "Esperando que la instancia esté lista para SSH..."
