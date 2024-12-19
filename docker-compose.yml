@@ -15,6 +15,15 @@ services:
       - "3000:3001"
     networks: 
      - network-backend
+
+  nginx:
+    image: nginx
+    ports:
+      - "443:443"   # Exponiendo el puerto HTTPS
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    networks:
+      - network-backend
   
   mongo:
     image: mongo
