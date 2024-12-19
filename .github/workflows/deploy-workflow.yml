@@ -48,7 +48,7 @@ jobs:
     #         --port 22 \
     #         --cidr 0.0.0.0/0  # Open for SSH to any IP, adjust if needed
 
-    #     
+    #       # Optionally, add other rules (HTTP, HTTPS, etc.)
     #       aws ec2 authorize-security-group-ingress \
     #         --group-id $SECURITY_GROUP_ID \
     #         --protocol tcp \
@@ -93,45 +93,30 @@ jobs:
           echo "PUBLIC_IP=$PUBLIC_IP" >> $GITHUB_ENV
 
 
-      - name: Wait for EC2 instance to be ready
-        run: |
-          HOST=$PUBLIC_IP
-          PORT=22
-          TIMEOUT=1000  # Tiempo máximo de espera en segundos
-          START=$(date +%s)
-            
-          echo "Esperando que la instancia esté lista para SSH..."
-    
-          while true; do
-              nc -z -w5 $HOST $PORT 2>/dev/null  # Verifica si el puerto 22 está abierto
-              if [ $? -eq 0 ]; then
-                  echo "Conexión SSH disponible en $HOST:$PORT"
-                  break  # Sale del ciclo cuando la conexión es exitosa
-              fi
-    
-              NOW=$(date +%s)
-              ELAPSED=$((NOW - START))
-              if [ $ELAPSED -ge $TIMEOUT ]; then
-                  echo "Tiempo de espera agotado. La instancia no está lista."
-                  exit 1  # Sale del flujo de trabajo si se alcanzó el tiempo de espera
-              fi
-    
-              echo "Esperando... ($ELAPSED segundos)"
-              sleep 5  # Espera de 5 segundos entre intentos
-          done
-    
-      - name: Copy docker-compose.yml to EC2
-        run: |
-          echo "Copiando docker-compose.yml a la instancia EC2..."
-          scp -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no docker-compose.yml ec2-user@$PUBLIC_IP:/home/ubuntu/docker-compose.yml
-          echo "docker-compose.yml copiado exitosamente."
-    
-      - name: SSH into EC2 and run docker-compose
-        run: |
-          echo "Conectando a la instancia EC2..."
-          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ec2-user@$PUBLIC_IP 'docker-compose -f /home/ubuntu/docker-compose.yml up -d'
-          echo "docker-compose ejecutado en la instancia EC2."
+      - name: Configure EC2 Instance
+        run: | 
 
+            mkdir -p ~/.ssh
+            echo "${{ secrets.AWS_SSH_KEY }}" > ~/.ssh/id_rsa
+            chmod 600 ~/.ssh/id_rsa
+            echo "${{ secrets.AWS_SSH_KEY }}" > ~/.ssh/id_rsa
+            # Añadir la IP pública de la instancia EC2 a known_hosts
+            ssh-keyscan -H ${{ env.PUBLIC_IP }} >> ~/.ssh/known_hosts
+  
+            # Conectar por SSH y configurar la instancia EC2
+            ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ec2-user@${{ env.PUBLIC_IP }} << 'EOF'
 
-
-            
+      - name: Copy docker-compose.yml to EC2 instance
+        run: |
+            scp -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa docker-compose.yml ec2-user@${{ env.PUBLIC_IP  }}:/home/ec2-user/
+           
+            sudo apt-get install docker-compose
+            sudo apt-get install docker -y
+            sudo usermod -aG docker ec2-user
+            sudo systemctl start docker
+            sudo systemctl enable docker
+            sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+            sudo chmod +x /usr/local/bin/docker-compose
+            sudo docker-compose pull  # Descarga las imágenes de Docker Hub
+            sudo docker-compose up -d  # Levanta los contenedores en segundo plano
+            EOF
