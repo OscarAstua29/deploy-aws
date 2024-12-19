@@ -95,9 +95,13 @@ jobs:
 
       - name: Configure EC2 Instance
         run: |  
-          mkdir -p ~/.ssh
-          echo -e "${{ secrets.AWS_SSH_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
+          echo 'Conexión exitosa'
+          mkdir -v  -p ~/.ssh
+          echo 'Carpeta'
+          echo   -e "${{ secrets.AWS_SSH_KEY }}" > ~/.ssh/id_rsa
+          echo 'Copia rsa'
+          chmod  600 ~/.ssh/id_rsa
+          echo 'permiso rsa'
           ssh-keyscan -H ${{ env.PUBLIC_IP }} >> ~/.ssh/known_hosts
           ssh -vvv -i ~/.ssh/id_rsa ubuntu@${{ env.PUBLIC_IP }} 'echo Conexión exitosa'
 
