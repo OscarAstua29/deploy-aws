@@ -95,6 +95,30 @@ jobs:
 
       - name: Configure EC2 Instance
         run: |  
+          OST=${{ env.PUBLIC_IP }} 
+          PORT=22
+          TIMEOUT=300  # Tiempo máximo de espera en segundos
+          START=$(date +%s)
+
+          echo "Esperando que la instancia esté lista para SSH..."
+
+          while true; do
+              nc -z -w5 $HOST $PORT 2>/dev/null
+              if [ $? -eq 0 ]; then
+                  echo "Conexión SSH disponible en $HOST:$PORT"
+                  break
+              fi
+
+              NOW=$(date +%s)
+              ELAPSED=$((NOW - START))
+              if [ $ELAPSED -ge $TIMEOUT ]; then
+                  echo "Tiempo de espera agotado. La instancia no está lista."
+                  exit 1
+              fi
+
+              echo "Esperando... ($ELAPSED segundos)"
+              sleep 5
+          done
           echo 'Conexión exitosa'
           mkdir -v  -p ~/.ssh
           echo 'Carpeta'
