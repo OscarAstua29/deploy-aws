@@ -42,7 +42,7 @@ jobs:
         run: |
 
           SECURITY_GROUP_ID=$(aws ec2 create-security-group \
-            --group-name MySecurityGroup2 \
+            --group-name MySecurityGroup3 \
             --description "Security group created by GitHub Actions" \
             --query 'GroupId' \
             --output text)
@@ -68,12 +68,14 @@ jobs:
             --protocol tcp \
             --port 3001 \
             --cidr 0.0.0.0/0  # Open for SSH to any IP, adjust if needed
+
+
       - name: Launch EC2 Instance
         id: create_ec2
         env:
           INSTANCE_TYPE: t2.micro
           AMI_ID: ami-0ebfd941bbafe70c6
-          SECURITY_GROUP: MySecurityGroup2
+          SECURITY_GROUP: MySecurityGroup3
         run: |
           INSTANCE_ID=$(aws ec2 run-instances \
             --image-id $AMI_ID \
