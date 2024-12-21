@@ -68,9 +68,6 @@ jobs:
             --protocol tcp \
             --port 3001 \
             --cidr 0.0.0.0/0  # Open for SSH to any IP, adjust if needed
-  
-
-
       - name: Launch EC2 Instance
         id: create_ec2
         env:
