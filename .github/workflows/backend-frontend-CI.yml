@@ -7,13 +7,13 @@ on:
       - 'frontend/**' 
     branches:
       - develop
-      - master
+      - main
   pull_request:
     paths:
       - 'backend/**'
       - 'frontend/**' 
       - develop
-      - master
+      - main
 
 jobs:
   build-and-push:
