@@ -25,29 +25,29 @@ const TodoForm = ({ saveTodo }) => {
   return (
     <Form>
       <FormGroup>
-        <Label for="title">Title</Label>
+        <Label for="title">Name</Label>
         <Input
           id="title"
           name="title"
-          placeholder="Enter a title"
+          placeholder="Enter your name"
           type="text"
           value={title}
           onChange={onTitleChange}
         />
       </FormGroup>
       <FormGroup>
-        <Label for="description">Description</Label>
+        <Label for="description">Instagram Account</Label>
         <Input
           id="description"
           name="description"
-          placeholder="Enter a Description"
+          placeholder="Enter you user"
           type="textarea"
           value={description}
           onChange={onDescriptionChange}
         />
       </FormGroup>
       <FormGroup>
-        <Label for="duedate">Due Date</Label>
+        <Label for="duedate">Date of Birth</Label>
         <Input
           id="duedate"
           name="duedate"

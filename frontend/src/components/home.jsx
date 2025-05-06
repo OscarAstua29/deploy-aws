@@ -59,7 +59,7 @@ const Home = () => {
     <>
       <Card>
         <CardBody>
-          <CardTitle tag="h1">To-Dos-para-VIVI</CardTitle>
+          <CardTitle tag="h1">Attendance list </CardTitle>
           <ListGroup>
             {todos.map((todo) => {
               return (
@@ -88,13 +88,13 @@ const Home = () => {
             })}
           </ListGroup>
           <Button onClick={() => setModalOpen(true)} color="primary">
-            Add Todo
+            Add data
           </Button>
         </CardBody>
       </Card>
       <Modal isOpen={modalOpen}>
         <ModalHeader toggle={() => setModalOpen(!modalOpen)}>
-          Add new Todo
+          Add data
         </ModalHeader>
         <ModalBody>
           <TodoForm saveTodo={handleNewTodo} />
