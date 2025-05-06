@@ -44,8 +44,8 @@ jobs:
         id: create_ec2
         env:
           INSTANCE_TYPE: t2.micro
-          AMI_ID: ami-058a8a5ab36292159
-          SECURITY_GROUP: sg-028a6ba28c78b56dd
+          AMI_ID: ami-0f88e80871fd81e91
+          SECURITY_GROUP: MySecurityGroup3
         run: |
           INSTANCE_ID=$(aws ec2 run-instances \
             --image-id $AMI_ID \
