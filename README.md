@@ -3,3 +3,6 @@
 # deploy-aws
 
 https://www.instagram.com/devops_club/p/C8MEyB3yXr9/
+
+
+Cambiar .env
