@@ -25,7 +25,7 @@ const TodoForm = ({ saveTodo }) => {
   return (
     <Form>
       <FormGroup>
-        <Label for="title">Name</Label>
+        <Label for="title">Creator</Label>
         <Input
           id="title"
           name="title"
@@ -36,18 +36,18 @@ const TodoForm = ({ saveTodo }) => {
         />
       </FormGroup>
       <FormGroup>
-        <Label for="description">Instagram Account</Label>
+        <Label for="description">Task Description</Label>
         <Input
           id="description"
           name="description"
-          placeholder="Enter you user"
+          placeholder="Enter description"
           type="textarea"
           value={description}
           onChange={onDescriptionChange}
         />
       </FormGroup>
       <FormGroup>
-        <Label for="duedate">Date of Birth</Label>
+        <Label for="duedate">Due Date</Label>
         <Input
           id="duedate"
           name="duedate"
